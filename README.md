@@ -16,7 +16,23 @@ $ docker run -it -p 59125:59125 synesthesiam/marytts:5.2
 
 You should now be able to access the server at [http://localhost:59125](http://localhost:59125)
 
-Beware that this will consume a lot of RAM on a Raspberry Pi!
+Beware that this may consume a lot of RAM on a Raspberry Pi!
+
+### Restricting Voices
+
+You can control which voices are loaded with `-v` or `--voice` arguments:
+
+```bash
+$ docker run -it -p 59125:59125 synesthesiam/marytts:5.2 --voice cmu-slt-hsmm --voice cmu-rms-hsmm
+```
+
+This will only loaded the necessary JARs for the specified voices, which may help conserve RAM on a Raspberry Pi.
+
+A list of voices can be obtained with:
+
+```bash
+$ docker run -it synesthesiam/marytts:5.2 --voices
+```
 
 ### Command-Line Utility
 
