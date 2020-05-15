@@ -47,8 +47,8 @@ $ txt2wav 'Welcome to the world of speech synthesis!' | aplay
 
 ## Voices
 
-| Voice                                                                                   | Language        | Gender   | License                         |                                                 |
-| -----                                                                                   | ----------      | -------- | ---------                       |                                                 |
+| Voice                                                                                   | Language        | Gender   | License                         | Samples                                         |
+| -----                                                                                   | ----------      | -------- | ---------                       | ---                                             |
 | [cmu-slt-hsmm](https://github.com/marytts/voice-cmu-slt-hsmm)                           | English (en-US) | Female   | [Arctic](licenses/ARCTIC)       | [Sample](samples/cmu-slt-hsmm.wav)              |
 | [cmu-bdl-hsmm](https://github.com/marytts/voice-cmu-bdl-hsmm)                           | English (en-US) | Male     | [Arctic](licenses/ARCTIC)       | [Sample](samples/cmu-bdl-hsmm.wav)              |
 | [cmu-rms-hsmm](https://github.com/marytts/voice-cmu-rms-hsmm)                           | English (en-US) | Male     | [Arctic](licenses/ARCTIC)       | [Sample](samples/cmu-rms-hsmm.wav)              |
