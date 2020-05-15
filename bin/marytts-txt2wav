@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+this_dir="$( cd "$( dirname "$0" )" && pwd )"
+base_dir="$(realpath "${this_dir}/..")"
+lib_dir="${base_dir}/lib"
+
+declare -A lang_jars
+lang_jars=(
+    ['de']="${lib_dir}/marytts-lang-de-5.2.jar"
+    ['fr']="${lib_dir}/marytts-lang-fr-5.2.jar"
+    ['it']="${lib_dir}/marytts-lang-it-5.2.jar"
+    ['ru']="${lib_dir}/marytts-lang-ru-5.2.jar"
+    ['sv']="${lib_dir}/marytts-lang-sv-5.2.jar"
+    ['te']="${lib_dir}/marytts-lang-te-5.2.jar"
+    ['tr']="${lib_dir}/marytts-lang-tr-5.2.jar"
+)
+
+declare -A voice_langs
+voice_langs=(
+    # English
+    ['cmu-bdl-hsmm']='en'
+    ['cmu-rms-hsmm']='en'
+    ['cmu-slt-hsmm']='en'
+    ['dfki-obadiah-hsmm']='en'
+    ['dfki-poppy-hsmm']='en'
+    ['dfki-prudence-hsmm']='en'
+    ['dfki-spike-hsmm']='en'
+
+    # German
+    ['bits1-hsmm']='de'
+    ['bits3-hsmm']='de'
+    ['dfki-pavoque-neutral-hsmm']='de'
+
+    # French
+    ['enst-camille-hsmm']='fr'
+    ['enst-dennys-hsmm']='fr'
+    ['upmc-jessica-hsmm']='fr'
+    ['upmc-pierre-hsmm']='fr'
+
+    # Italian
+    ['istc-lucia-hsmm']='it'
+
+    # Russian
+    ['ac-irina-hsmm']='ru'
+
+    # Swedish
+    ['stts-sv-hb-hsmm']='sv'
+
+    # Telugu
+    ['cmu-nk-hsmm']='te'
+
+    # Turkish
+    ['dfki-ot-hsmm']='tr'
+)
+
+# -----------------------------------------------------------------------------
+
+# List voices if no command-line arguments
+if [[ -z "$1" ]]; then
+    echo -e "voice\tlanguage"
+    for voice in "${!voice_langs[@]}"; do
+        echo -e "${voice}\t${voice_langs["${voice}"]}"
+    done | sort
+
+    exit 0
+fi
+
+# Extract voice from command-line args
+args=()
+voice='cmu-slt-hsmm'
+has_output=''
+while [[ ! -z "$1" ]]; do
+    if [[ "$1" = '-v' || "$1" = '--voice' ]]; then
+        # Capture voice
+        voice="$2"
+    elif [[ "$1" = '-o' || "$1" = '--output' ]]; then
+        if [[ "$2" = '-' ]]; then
+            # Output to started out
+            shift 2
+            continue
+        else
+            # User has specified output path
+            has_output='true'
+        fi
+    fi
+
+    args+=("$1")
+    shift 1
+done
+
+# -----------------------------------------------------------------------------
+
+if [[ -z "${has_output}" ]]; then
+    temp_wav="$(mktemp --suffix=.wav)"
+    args+=('--output' "${temp_wav}")
+fi
+
+# -----------------------------------------------------------------------------
+
+# Only add necessary jars to the classpath
+classpath="${base_dir}/jar/txt2wav-1.0-SNAPSHOT.jar"
+
+# Any extra jars needed by voice (e.g., languages/lexicons)
+voice_lang="${voice_langs["${voice}"]}"
+
+if [[ ! -z "${voice_lang}" ]]; then
+    extra_jars="${lang_jars["${voice_lang}"]}"
+fi
+
+if [[ ! -z "${extra_jars}" ]]; then
+    # Add extra jars to classpath
+    classpath="${classpath}:${extra_jars}"
+fi
+
+# Naming convention is lib/voice-<VOICE>-5.2.jar
+voice_jar="${lib_dir}/voice-${voice}-5.2.jar"
+if [[ -f "${voice_jar}" ]]; then
+    classpath="${classpath}:${voice_jar}"
+fi
+
+# Run txt2wav (redirect stdout)
+java -cp "${classpath}" de.dfki.mary.Txt2Wav "${args[@]}" 1>&2
+
+if [[ ! -z "${temp_wav}" ]]; then
+    cat "${temp_wav}"
+fi

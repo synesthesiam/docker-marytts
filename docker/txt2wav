@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+docker run -i \
+       -v "${HOME}:${HOME}" \
+       -w "$(pwd)" \
+       -e "HOME=${HOME}" \
+       --user "$(id -u):$(id -g)" \
+       --entrypoint /marytts/bin/marytts-txt2wav \
+       synesthesiam/marytts:5.2 "$@"
