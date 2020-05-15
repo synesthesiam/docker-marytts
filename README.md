@@ -1,8 +1,8 @@
 # MaryTTS 5.2 with HSMM Voices
 
-[MaryTTS 5.2](http://mary.dfki.de) text to speech server and a collection of hidden semi-Markov model voices for various languages.
+[MaryTTS 5.2](http://mary.dfki.de) text to speech server and a collection of hidden semi-Markov model (HSMM) [voices for various languages](#voices).
 
-Also includes [txt2wav](https://github.com/marytts/marytts-txt2wav) utility for command-line text to speech.
+Also includes [txt2wav](https://github.com/marytts/marytts-txt2wav) utility for [command-line text to speech](#command-line-utility).
 
 ## Running
 
@@ -16,9 +16,11 @@ $ docker run -it -p 59125:59125 synesthesiam/marytts:5.2
 
 You should now be able to access the server at [http://localhost:59125](http://localhost:59125)
 
+Beware that this will consume a lot of RAM on a Raspberry Pi!
+
 ### Command-Line Utility
 
-The [txt2wav](https://github.com/marytts/marytts-txt2wav) is included in the Docker image.
+The [txt2wav](https://github.com/marytts/marytts-txt2wav) utility is included in the Docker image.
 A bash wrapper script allows you to list voices and includes only the necessary JARs to reduce start-up time.
 
 Copy the [txt2wav](docker/txt2wav) script to somewhere in your `$PATH` and mark it executable.
