@@ -6,4 +6,4 @@ all:
 
 .PHONY: local
 local:
-	docker build . -t 'synesthesiam/marytts:5.2'
+	docker build . -f Dockerfile.local -t 'synesthesiam/marytts:5.2'

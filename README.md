@@ -1,12 +1,16 @@
 # MaryTTS 5.2 with HSMM Voices
 
-[MaryTTS 5.2](http://mary.dfki.de) text to speech server and a collection of hidden semi-Markov model (HSMM) [voices for various languages](#voices).
+[MaryTTS 5.2](http://mary.dfki.de) text to speech server and a collection of hidden semi-Markov model (HSMM) [voices for various languages](#voices) in a multi-platform Docker image.
 
 Also includes [txt2wav](https://github.com/marytts/marytts-txt2wav) utility for [command-line text to speech](#command-line-utility).
 
-## Running
+Supported Platforms:
 
-The `docker/` directory of the repo includes example scripts for running the Docker image.
+* `amd64` - laptops, desktops, servers
+* `arm/v7` - Raspberry Pi 2/3
+* `arm64` - Raspberry Pi 3+/4
+
+## Running
 
 To run a MaryTTS server:
 
@@ -39,7 +43,7 @@ $ docker run -it synesthesiam/marytts:5.2 --voices
 The [txt2wav](https://github.com/marytts/marytts-txt2wav) utility is included in the Docker image.
 A bash wrapper script allows you to list voices and includes only the necessary JARs to reduce start-up time.
 
-Copy the [txt2wav](docker/txt2wav) script to somewhere in your `$PATH` and mark it executable.
+Copy the included [txt2wav script](docker/txt2wav) to somewhere in your `$PATH` and mark it executable.
 This script runs the Docker image as the current user, maps your `$HOME` directory, and sets the working directory to `$PWD`.
 
 List available voices:
@@ -62,6 +66,19 @@ Play directly:
 ```bash
 $ txt2wav 'Welcome to the world of speech synthesis!' | aplay
 ```
+
+### Online Mode
+
+You can run `txt2wav` in an "online" mode where it will continuously read sentences from standard in, overwrite the output WAV file, and repeat the sentence back on standard out.
+
+```bash
+$ txt2wav --online -o /path/to/tts.wav
+
+Reading sentences from stdin
+...
+```
+
+Typing a sentence and pressing `<ENTER>` will overwrite `/path/to/tts.wav` and print the sentence back on standard out. To end the session, press `CTRL+D`.
 
 ## Voices
 
