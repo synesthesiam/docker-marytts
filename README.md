@@ -67,6 +67,19 @@ Play directly:
 $ txt2wav 'Welcome to the world of speech synthesis!' | aplay
 ```
 
+### Online Mode
+
+You can run `txt2wav` in an "online" mode where it will continuously read sentences from standard in, overwrite the output WAV file, and repeat the sentence back on standard out.
+
+```bash
+$ txt2wav --online -o /path/to/tts.wav
+
+Reading sentences from stdin
+...
+```
+
+Typing a sentence and pressing `<ENTER>` will overwrite `/path/to/tts.wav` and print the sentence back on standard out. To end the session, press `CTRL+D`.
+
 ## Voices
 
 | Voice                                                                                   | Language        | Gender   | License                         | Samples                                                  |

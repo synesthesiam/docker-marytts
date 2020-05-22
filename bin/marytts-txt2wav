@@ -68,6 +68,8 @@ fi
 args=()
 voice='cmu-slt-hsmm'
 has_output=''
+online=''
+help=''
 while [[ ! -z "$1" ]]; do
     if [[ "$1" = '-v' || "$1" = '--voice' ]]; then
         # Capture voice
@@ -81,6 +83,14 @@ while [[ ! -z "$1" ]]; do
             # User has specified output path
             has_output='true'
         fi
+    elif [[ "$1" == '--online' ]]; then
+        # Receive multiple sentences via stdin.
+        # Overwrite output WAV after each and confirm.
+        online='true'
+        shift 1
+        continue
+    elif [[ "$1" == '-h' || "$1" == '--help' ]]; then
+         help='yes'
     fi
 
     args+=("$1")
@@ -117,9 +127,25 @@ if [[ -f "${voice_jar}" ]]; then
     classpath="${classpath}:${voice_jar}"
 fi
 
-# Run txt2wav (redirect stdout)
-java -cp "${classpath}" de.dfki.mary.Txt2Wav "${args[@]}" 1>&2
+if [[ -z "${online}" ]]; then
+    # Run txt2wav (redirect stdout)
+    java -cp "${classpath}" de.dfki.mary.Txt2Wav "${args[@]}" 1>&2
 
-if [[ ! -z "${temp_wav}" ]]; then
-    cat "${temp_wav}"
+    if [[ ! -z "${temp_wav}" ]]; then
+        cat "${temp_wav}"
+    fi
+else
+    echo 'Reading sentences from stdin' 1>&2
+
+    # Receive multiple sentences via stdin.
+    # Overwrite output WAV after each and confirm.
+    while read -r line; do
+        # Run txt2wav (redirect stdout)
+        java -cp "${classpath}" de.dfki.mary.Txt2Wav "${args[@]}" "${line}" 1>&2
+        echo "${line}"
+    done
+fi
+
+if [[ ! -z "${help}" ]]; then
+    echo -e ' --online\t\tRead sentences from standard in and overwrite output WAV each time' 1>&2
 fi
